@@ -62,13 +62,13 @@ jq '.[].id' cars.json
 
 ### **3.3 - Select values of multiple keys**
 
-### **3.3.1 - Top level** 
+**3.3.1 - Top level** 
 
 ```bash
 jq '.[] | .id, .location' cars.json
 ```
 
-### **3.3.2 - Nested** 
+**3.3.2 - Nested** 
 
 ```bash
 jq '.[].car | .make, .model, .year' cars.json
@@ -102,7 +102,7 @@ jq '.[].car | select(.year > 2000)' cars.json
 jq 'del(.[].id)' cars.json
 ```
 
-**6.1.1 - Delete multiple nested keys.** 
+### **6.2 - Delete multiple nested keys.** 
 
 ```bash
 jq 'del(.[].car.year) | del(.[].car.make)' cars.json
@@ -118,7 +118,7 @@ The next part of the walkthrough will focus on a scenario where someone could `j
 curl 'http://lookup-service-prod.mlb.com/json/named.roster_40.bam?team_id='143'' | jq '.roster_40.queryResults.row' > phillies.json
 ```
 
-**7.2 - Sort / Group By** 
+### **7.2 - Sort / Group By** 
 We could sort or group by to do some filtering; however, we don't use it moving forward. Here is what those options could look like though.
 
 
@@ -136,13 +136,13 @@ group_by(.foo) takes as input an array, groups the elements having the same .foo
 jq 'group_by(.position_txt)' phillies.json
 ```
 
-**7.3 - Filter out pitchers** 
+### **7.3 - Filter out pitchers** 
 `-s`: Read the entire input stream into a large array
 ```bash
 jq '.[] | select(.position_txt == "P")' phillies.json | jq -s '.' > pitchers.json
 ```
 
-**7.4 - Create pitchers CSV** 
+### **7.4 - Create pitchers CSV** 
 The script file `toCSV.jq` does the following:
 1. Take the array input containing all the different keys and set them as the columns
 2. For each object in the array input, map the columns to the corresponding values in the object and set them as the rows.
@@ -153,7 +153,7 @@ The script file `toCSV.jq` does the following:
 jq -r -f toCSV.jq pitchers.json > pitchers.csv
 ```
 
-**7.5 - Get stats for the pitchers in the rotation who are either on our team or we are facing** 
+### **7.5 - Get stats for the pitchers in the rotation who are either on our team or we are facing** 
 
 **7.5.1 - Aaron Nola (SP).** 
 
@@ -173,7 +173,7 @@ curl 'http://lookup-service-prod.mlb.com/json/named.sport_career_pitching.bam?le
 curl 'http://lookup-service-prod.mlb.com/json/named.sport_career_pitching.bam?league_list_id=%27mlb%27&game_type=%27R%27&player_id=%27621107%27' | jq '.sport_career_pitching.queryResults.row' > eflin.json
 ```
 
-**7.6 - Add their names to their stats** 
+### **7.6 - Add their names to their stats** 
 
 **7.6.1 - Aaron Nola (SP).** 
 
@@ -193,12 +193,12 @@ jq '.full_name = "Zack Wheeler"' wheeler.json > wheeler.json.tmp && mv wheeler.j
 jq '.full_name = "Zach Eflin"' eflin.json > eflin.json.tmp && mv eflin.json.tmp eflin.json 
 ```
 
-**7.7 - Combine their data into one JSON array** 
+### **7.7 - Combine their data into one JSON array** 
 ```bash
 jq -s '.' nola.json eflin.json wheeler.json > rotation.json
 ```
 
-**7.8 - Generate rotation CSV file** 
+### **7.8 - Generate rotation CSV file** 
 ```bash
 jq -r -f toCSV.jq rotation.json > rotation.csv
 ```

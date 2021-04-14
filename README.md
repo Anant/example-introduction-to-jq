@@ -47,6 +47,7 @@ jq '.[2], .[4]' cars.json
 ```
 
 ## **3. Print Keys and Values**
+The `|` operator combines two filters by feeding the output(s) of the one on the left into the input of the one on the right. It's pretty much the same as the Unix shell's pipe, if you're used to that.
 
 ### **3.1 - Print Keys.** 
 
